@@ -2,6 +2,7 @@ src/mk1/photos/*
 src/mk1/data/*
 src/mk2/data/*
 src/mk2/photos/*
+dist/
 
 # Logs
 logs

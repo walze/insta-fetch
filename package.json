@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "har": "node src/handleHAR",
-    "start": "parcel src/index.html --open --no-cache"
+    "mk1": "node src/mk1/handleHAR",
+    "mk2": "node src/mk2/index",
+    "start": "parcel src/mk1/index.html --open --no-cache"
   },
   "author": "",
   "license": "ISC",
@@ -14,6 +15,7 @@
     "parcel-bundler": "^1.12.2"
   },
   "dependencies": {
+    "async": "^2.6.2",
     "axios": "^0.18.0",
     "jsdom": "^14.0.0"
   }
