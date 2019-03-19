@@ -3,9 +3,20 @@ const axios = require('axios')
 const { JSDOM } = require('jsdom')
 const fs = require('fs')
 const { promisify } = require('util')
+const path = require('path')
 
 const readdir = promisify(fs.readdir)
 const writeFile = promisify(fs.writeFile)
+
+const dir = `${__dirname}/photos/`
+readdir(dir)
+    .then(files => {
+        for (const file of files) {
+            fs.unlink(path.join(dir, file), err => {
+                if (err) throw err;
+            });
+        }
+    })
 
 /** @type {string[]} */
 const links = require('./links.json')
@@ -18,7 +29,17 @@ const headers = {
 const escapeRegExp = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 const getMetaData = async link => {
-    const { data: html } = await axios.get(link, { headers })
+    console.log(`Getting metadata ${link}\n`)
+
+    const rs = await axios
+        .get(link, { headers })
+        .catch(() => console.log('Error getting link'))
+
+    if (!rs) return console.log('Error getting html')
+
+    const { data: html } = rs
+
+    console.log(`Got metadata ${link}\n`)
 
     const { window } = new JSDOM(html)
     const { document } = window
@@ -49,29 +70,43 @@ const getMetaData = async link => {
     return arr
 }
 
-const getPhoto = linkURL => async () => {
-    const photos = await readdir(`${__dirname}/photos/`)
+const getPhoto = async (linkURL, i) => {
+    console.log(`Getting photo #${i}`)
+
+    // const photos = await readdir(`${__dirname}/photos/`)
     const [link, name] = await getMetaData(linkURL)
 
+    if (!name || !link) {
+        console.log('Private profile\n\n')
+        return null
+    }
 
     const rgx = new RegExp(escapeRegExp(name))
-    const count = photos.filter(a => rgx.test(a)).length
+    // const count = photos.filter(a => rgx.test(a)).length
 
+    /** @type {string} */
     const base64 = await axios
         .get(link, { responseType: 'arraybuffer' })
         .then(response => Buffer.from(response.data, 'binary').toString('base64'))
+        .catch(() => console.log('Error parsing base64'))
 
-    const filename = `${name}_${count}`
 
-    writeFile(
-        __dirname + `/photos/${filename}.png`,
-        base64,
-        { encoding: 'base64' }
-    )
+    // const filename = `${name}#${count}`
+    // const filePath = __dirname + `/photos/${filename}.png`
 
-    return filename
+    // writeFile(
+    //     filePath,
+    //     base64,
+    //     { encoding: 'base64' }
+    // )
+    //     .then(() => console.log(`Written File ${filename}\n\n`))
+
+    return base64
 }
 
-const funcs = links.map(getPhoto)
+const files = Promise.all(links.map(getPhoto))
 
-funcs.reduce((prev, cur) => prev.then(cur), funcs[0]())
+// const syncCall = () => promises.reduce((prev, cur) => prev.then(cur), promises[0]())
+// const asyncCall = () => promises.map(promise => promise())
+
+files.then(console.log)
