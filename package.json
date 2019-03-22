@@ -6,13 +6,14 @@
   "scripts": {
     "har": "node src/har_fetch/filter_har",
     "link": "node src/link_fetch/index",
-    "start": "parcel src/mk1/index.html --open --no-cache"
+    "start": "parcel src/browser_view/index.html --open --no-cache",
+    "update-start": "npm run har && npm start"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "cssnano": "^4.1.10",
-    "parcel-bundler": "^1.12.2"
+    "parcel-bundler": "^1.12.3"
   },
   "dependencies": {
     "async": "^2.6.2",
