@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "mk1": "node src/mk1/handleHAR",
-    "mk2": "node src/mk2/index",
+    "har": "node src/har_fetch/filter_har",
+    "link": "node src/link_fetch/index",
     "start": "parcel src/mk1/index.html --open --no-cache"
   },
   "author": "",

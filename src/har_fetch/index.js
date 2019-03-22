@@ -1,4 +1,4 @@
-const photos = import('./filteredHar.json')
+const photos = import('../har_photos_base64.json')
 
 const makeImg = base64 => {
     const container = document.createElement('div')
