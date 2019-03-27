@@ -16,7 +16,6 @@
     "parcel-bundler": "^1.12.3"
   },
   "dependencies": {
-    "@angular/cli": "^7.3.6",
     "async": "^2.6.2",
     "axios": "^0.18.0",
     "jsdom": "^14.0.0"
