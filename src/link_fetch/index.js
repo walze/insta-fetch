@@ -6,7 +6,6 @@ const { promisify } = require('util')
 const path = require('path')
 
 const readdir = promisify(fs.readdir)
-const writeFile = promisify(fs.writeFile)
 
 const dir = `${__dirname}/photos/`
 readdir(dir)

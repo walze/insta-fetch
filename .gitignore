@@ -1,6 +1,8 @@
 src/**/data/*
 src/**/photos/*
 dist/
+src/har_photos_base64.json
+src/data.har
 
 # Logs
 logs

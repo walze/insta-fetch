@@ -1,4 +1,17 @@
 const fs = require('fs')
+const { promisify } = require('util')
+const path = require('path')
+const readdir = promisify(fs.readdir)
+
+const dir = `${__dirname}/photos/`
+readdir(dir)
+    .then(files => {
+        for (const file of files) {
+            fs.unlink(path.join(dir, file), err => {
+                if (err) throw err;
+            });
+        }
+    })
 
 const har = JSON.parse(fs.readFileSync(__dirname + '/../data.har', 'utf8'))
 
