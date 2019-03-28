@@ -1,21 +1,20 @@
-const photos = import('../har_photos_base64.json')
+import * as photos from './photos/**.png'
 
 const makeImg = base64 => {
     const container = document.createElement('div')
     container.classList.add('img')
 
     const img = document.createElement('img')
-    img.src = `data:image/jpeg;base64,${base64}`
+    img.src = base64
 
     container.append(img)
 
-    return container
+    document.body.append(container)
 }
 
-photos.then(photo => {
-    photo.map(base64 => {
-        const img = makeImg(base64)
-
-        document.body.append(img)
-    })
-})
+for (const key in photos) {
+    if (photos.hasOwnProperty(key)) {
+        const url = photos[key]
+        makeImg(escape(url))
+    }
+}

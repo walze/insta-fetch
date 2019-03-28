@@ -1,6 +1,3 @@
-// article .FyNDV
-// photo .v1Nh3.kIKUG a
-
 const downloadJson = (exportObj, exportName) => {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj))
     const downloadAnchorNode = document.createElement('a')
@@ -14,15 +11,25 @@ const downloadJson = (exportObj, exportName) => {
     downloadAnchorNode.remove()
 }
 
-const getLinks = () => Array
-    .from(document.querySelectorAll('.v1Nh3.kIKUG a'))
+
+const getLinks = () => [...document.querySelectorAll('[href]')]
     .map(a => a.href)
+    .filter(link => /https:\/\/www\.instagram\.com\/p\//.test(link))
 
-const art = document.querySelector('.FyNDV')
-const links = [...getLinks()]
+const links = getLinks()
 
-art.addEventListener('DOMSubtreeModified', () => {
+document.body.addEventListener('DOMSubtreeModified', () => {
+    let anyAdded = false
+    let count = 0
+
     getLinks().map(link => {
-        if (!links.includes(link)) { links.push(link) }
+        if (!links.includes(link)) {
+            links.push(link)
+            count++
+            anyAdded = true
+        }
     })
+
+    if (anyAdded)
+        console.log(`added ${count} links, total:`, links.length)
 })

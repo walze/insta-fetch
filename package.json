@@ -6,8 +6,7 @@
   "scripts": {
     "har": "node src/har_fetch/filter_har",
     "link": "node src/link_fetch/index",
-    "start": "parcel src/browser_view/index.html --open --no-cache",
-    "update-start": "npm run har && npm start"
+    "start": "parcel src/browser_view/index.html --open --no-cache"
   },
   "author": "",
   "license": "ISC",
@@ -17,7 +16,6 @@
   },
   "dependencies": {
     "async": "^2.6.2",
-    "axios": "^0.18.0",
-    "jsdom": "^14.0.0"
+    "axios": "^0.18.0"
   }
 }
