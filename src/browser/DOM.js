@@ -33,3 +33,10 @@ document.body.addEventListener('DOMSubtreeModified', () => {
     if (anyAdded)
         console.log(`added ${count} links, total:`, links.length)
 })
+
+function save(e) {
+    var evtobj = window.event ? event : e
+    if (evtobj.keyCode == 90 && evtobj.ctrlKey) downloadJson(links, 'links');
+}
+
+document.onkeydown = save;
