@@ -37,7 +37,6 @@ const map = async (links) => {
 
     for (var i = 0; i < links.length; i++) {
         // await wait(1000/30)
-
         const { photo: url, user } = links[i]
         const photo = await getPhoto(url, i)
         if (!photo) throw new Error('no photo')
@@ -49,7 +48,7 @@ const map = async (links) => {
 }
 
 /** @type {string[]} */
-const links = require('./links.json')
+const links = require('../links.json')
 
 
 const escapeRegExp = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
@@ -65,7 +64,7 @@ map(links)
                 const photos = await readdir(`${__dirname}/photos/`)
                 const rgx = new RegExp(escapeRegExp(user))
                 const count = photos.filter(a => rgx.test(a)).length
-                const filename = `${user}#${count}`
+                const filename = `${user} (${count})`
                 const filePath = __dirname + `/photos/${filename}.png`
 
                 return writeFile(

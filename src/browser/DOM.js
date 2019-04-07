@@ -1,5 +1,5 @@
 const downloadJson = (exportObj, exportName) => {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj))
+    const dataStr = "data:text/jsoncharset=utf-8," + encodeURIComponent(JSON.stringify(exportObj))
     const downloadAnchorNode = document.createElement('a')
 
     downloadAnchorNode.setAttribute("href", dataStr)
@@ -12,7 +12,7 @@ const downloadJson = (exportObj, exportName) => {
 }
 
 
-const getLinks = () => [...document.querySelectorAll('[href]')]
+const getLinks = () => [...document.body.querySelectorAll('[href]')]
     .map(a => a.href)
     .filter(link => /https:\/\/www\.instagram\.com\/p\//.test(link))
 
@@ -22,21 +22,24 @@ document.body.addEventListener('DOMSubtreeModified', () => {
     let anyAdded = false
     let count = 0
 
-    getLinks().map(link => {
-        if (!links.includes(link)) {
-            links.push(link)
+    const newLinks = getLinks()
+        .filter(link => !links.includes(link))
+        .map(link => {
             count++
             anyAdded = true
-        }
-    })
+
+            return link
+        })
+
+    links.push(...newLinks)
 
     if (anyAdded)
         console.log(`added ${count} links, total:`, links.length)
 })
 
-function save(e) {
-    var evtobj = window.event ? event : e
-    if (evtobj.keyCode == 90 && evtobj.ctrlKey) downloadJson(links, 'links');
+const save = e => {
+    const evtobj = window.event ? event : e
+    if (evtobj.keyCode == 90 && evtobj.ctrlKey) downloadJson(links, 'links')
 }
 
-document.onkeydown = save;
+document.onkeydown = save

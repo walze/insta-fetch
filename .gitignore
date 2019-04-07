@@ -5,7 +5,7 @@ src/**/photos/*
 dist/
 
 *.har
-links.json
+*.json
 har_photos_base64.json
 
 # Logs

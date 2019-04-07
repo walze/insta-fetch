@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "har": "node src/har_fetch/filter_har",
+    "write": "node src/node/write_photos",
     "link": "node src/link_fetch/index",
     "start": "parcel src/browser_view/index.html --open --no-cache"
   },
