@@ -11,16 +11,22 @@
         body {
             margin: 0 auto;
             display: flex;
+            justify-content: space-around;
+            align-items: center;
             flex-wrap: wrap;
+            background: #222;
         }
 
         .img {
-            width: calc(10% - .5rem);
+            width: calc(20% - .5rem);
+            min-width: 320px;
             margin: .25rem;
         }
 
         img {
             width: 100%;
+            border-radius: .5rem;
+            overflow: hidden;
         }
     </style>
 </head>
