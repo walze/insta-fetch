@@ -21,7 +21,7 @@ for (const key in photos) {
     const user = key.match(rgx)[1]
     const img = makeImg(escape(url), user)
 
-    img.addEventListener('click', () => alert(user))
+    img.addEventListener('click', () => alert('@' + user))
 
     document.body.append(img)
 }
