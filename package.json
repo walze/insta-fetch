@@ -6,6 +6,7 @@
   "scripts": {
     "write": "node src/node/write_photos",
     "link": "node src/link_fetch/index",
+    "build": "parcel build src/browser_view/index.html -d ./docs --no-cache --public-url .",
     "start": "parcel src/browser_view/index.html --open --no-cache"
   },
   "author": "",
