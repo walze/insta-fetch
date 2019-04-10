@@ -30,7 +30,7 @@ const getMetaData = arr => arr
     .filter(a => !!a)
 
 
-
+document.body.innerHTML = ''
 const wrapper = document.createElement('div')
 document.body.append(wrapper)
 
@@ -39,13 +39,54 @@ const makeIFrame = src => {
     el.src = src
 
     /**@type { Promise<HTMLIFrameElement> } */
-    const load = new Promise(rs => el.addEventListener('load', () => rs(el)))
+    const load = new Promise(rs => el.onload = () => rs(el))
     const add = () => {
         wrapper.append(el)
         return load
     }
 
     return { el, add, remove: () => el.remove() }
+}
+
+const getIFrameData = async iframe => {
+    const el = await iframe.add()
+
+    const [photo, user] = getMetaData([...el.contentWindow.document.querySelectorAll('meta')])
+    console.info(`Got photo from @${user}`)
+
+    const obj = { user, photo }
+    iframe.remove()
+
+    return obj
+}
+
+const getDataFromLinks = async arr => {
+    const datas = arr.map(link => makeIFrame(link))
+    const iframes = await Promise.all(datas)
+
+    return iframes.map(getIFrameData)
+}
+
+const getLinkData = async html => {
+    const div = document.createElement('div')
+    div.innerHTML = html
+
+    const [photo, user] = getMetaData([...div.querySelectorAll('meta')])
+    console.info(`Got photo from @${user}`)
+
+    const obj = { user, photo }
+
+    return obj
+}
+
+/**
+ * @param {string[]} arr 
+ */
+const fetchDataLinks = async arr => {
+    const htmlPromises = arr.map(link => fetch(link).then(r => r.text()))
+    const htmls = await Promise.all(htmlPromises)
+
+    return htmls.map(getLinkData)
 }
 
 const generator = (links, chunkSize) => {
@@ -59,22 +100,9 @@ const generator = (links, chunkSize) => {
             return null
         }
 
-        const datas = chunks[index].map(link => makeIFrame(link))
-        const iframes = await Promise.all(datas)
-
-        const objs = iframes.map(async iframe => {
-            const el = await iframe.add()
-
-            const [photo, user] = getMetaData([...el.contentWindow.document.querySelectorAll('meta')])
-            console.info(`Got photo from @${user}`)
-
-            const obj = { user, photo }
-            iframe.remove()
-
-            return obj
-        })
-
+        const objs = await fetchDataLinks(chunks[index])
         const data = await Promise.all(objs)
+
         const nextData = await run(++index)
 
         return nextData ? [...data, ...nextData] : data
@@ -83,4 +111,4 @@ const generator = (links, chunkSize) => {
     return run
 }
 
-const run = generator(links, 8)()
+const run = generator(links, 3)()
