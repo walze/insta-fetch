@@ -111,4 +111,4 @@ const generator = (links, chunkSize) => {
     return run
 }
 
-const run = generator(links, 3)()
+const run = generator(links, 2)()
