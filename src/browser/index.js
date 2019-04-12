@@ -1,6 +1,6 @@
 import Queue from 'promise-queue'
 
-import { getLinkData } from './DOM'
+import { getLinkData, saveLinks } from './DOM'
 import { ADDED_LINKS, LISTENING_LINKS, emitter } from '../events'
 
 const maxConcurrent = 1
@@ -47,3 +47,6 @@ emitter.on(ADDED_LINKS, queueLinks(photos))
 emitter.emit(LISTENING_LINKS)
 
 console.log('photos ref', photos)
+
+console.log('\nCTRL + Z to download')
+document.onkeydown = saveLinks(photos)

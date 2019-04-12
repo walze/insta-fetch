@@ -6,16 +6,14 @@ export const getLinks = () => [...document.body.querySelectorAll('[href]')]
     .filter(link => /https:\/\/www\.instagram\.com\/p\//.test(link))
 
 
-const saveLinks = e => {
+export const saveLinks = file => e => {
     const evtobj = window.event ? event : e
-    if (evtobj.keyCode == 90 && evtobj.ctrlKey) downloadJson(links, 'links')
+    if (evtobj.keyCode == 90 && evtobj.ctrlKey) downloadJson(file, 'links')
 }
 
 export const links = getLinks()
 
 export const listenLinks = () => {
-    document.onkeydown = saveLinks
-
     document.body.addEventListener('DOMSubtreeModified', () => {
 
         let anyAdded = false
