@@ -1,114 +1,49 @@
-/** @type {<T>(arr: T[], len: number) => T[][]} */
-const chunkArr = (arr, len) => {
-    const chunks = []
-    const n = arr.length
+import Queue from 'promise-queue'
 
-    let i = 0
-    while (i < n) chunks.push(arr.slice(i, i += len))
+import { getLinkData } from './DOM'
+import { ADDED_LINKS, LISTENING_LINKS, emitter } from '../events'
 
-    return chunks
-}
-
-const getMetaData = arr => arr
-    .map(meta => {
-        const { content } = meta
-        const name = meta.getAttribute('property')
-
-        return { name, content }
-    })
-    .filter(a => a.name && a.name.match(/og:.+/))
-    .map(meta => {
-        let name = meta.name.replace('og:', '')
-        const match = meta.content.match(/@([^\s)]+)/)
-        if (name === 'description') {
-            meta.content = match[1]
-        }
-
-        if (name === 'image' || name === 'description')
-            return meta.content
-    })
-    .filter(a => !!a)
+const maxConcurrent = 1
+const maxQueue = Infinity
+const queue = new Queue(maxConcurrent, maxQueue)
 
 
-document.body.innerHTML = ''
-const wrapper = document.createElement('div')
-document.body.append(wrapper)
+const fetchLinkData = link => fetch(link)
+    .then(r => r.text())
+    .then(getLinkData)
 
-const makeIFrame = src => {
-    const el = document.createElement('iframe')
-    el.src = src
 
-    /**@type { Promise<HTMLIFrameElement> } */
-    const load = new Promise(rs => el.onload = () => rs(el))
-    const add = () => {
-        wrapper.append(el)
-        return load
-    }
+const add2Queue = p => {
+    const q = queue.add(() => p)
+    const pending = queue.getPendingLength()
+    const length = queue.getQueueLength()
 
-    return { el, add, remove: () => el.remove() }
-}
+    console.log('Queue Pending', pending)
+    console.log('Queue Length', length)
 
-const getIFrameData = async iframe => {
-    const el = await iframe.add()
-
-    const [photo, user] = getMetaData([...el.contentWindow.document.querySelectorAll('meta')])
-    console.info(`Got photo from @${user}`)
-
-    const obj = { user, photo }
-    iframe.remove()
-
-    return obj
-}
-
-const getDataFromLinks = async arr => {
-    const datas = arr.map(link => makeIFrame(link))
-    const iframes = await Promise.all(datas)
-
-    return iframes.map(getIFrameData)
-}
-
-const getLinkData = async html => {
-    const div = document.createElement('div')
-    div.innerHTML = html
-
-    const [photo, user] = getMetaData([...div.querySelectorAll('meta')])
-    console.info(`Got photo from @${user}`)
-
-    const obj = { user, photo }
-
-    return obj
+    return q
 }
 
 /**
- * @param {string[]} arr 
+ * @param { string[] } addedLinks 
  */
-const fetchDataLinks = async arr => {
-    const htmlPromises = arr.map(link => fetch(link).then(r => r.text()))
-    const htmls = await Promise.all(htmlPromises)
+const queueLinks = photos => async (addedLinks) => {
+    console.log('found new links', addedLinks)
 
-    return htmls.map(getLinkData)
-}
-
-const generator = (links, chunkSize) => {
-    const chunks = chunkArr(links, chunkSize)
-
-    const run = async (index = 0) => {
-        console.log('Running...', index)
-
-        if (index >= chunks.length) {
-            console.warn('End')
-            return null
-        }
-
-        const objs = await fetchDataLinks(chunks[index])
-        const data = await Promise.all(objs)
-
-        const nextData = await run(++index)
-
-        return nextData ? [...data, ...nextData] : data
+    const pushPhotos = async photoPromise => {
+        photos.push(await photoPromise)
+        return photoPromise
     }
 
-    return run
+    return addedLinks
+        .map(fetchLinkData)
+        .map(add2Queue)
+        .map(pushPhotos)
 }
 
-const run = generator(links, 2)()
+
+const photos = []
+emitter.on(ADDED_LINKS, queueLinks(photos))
+emitter.emit(LISTENING_LINKS)
+
+console.log('photos ref', photos)
