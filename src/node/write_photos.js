@@ -8,12 +8,15 @@ const readdir = promisify(fs.readdir)
 const writeFile = promisify(fs.writeFile)
 
 const dir = `${__dirname}/photos/`
+if (!fs.existsSync(dir))
+    fs.mkdirSync(dir)
+
 readdir(dir)
     .then(files => {
         for (const file of files) {
             fs.unlink(path.join(dir, file), err => {
-                if (err) throw err;
-            });
+                if (err) throw err
+            })
         }
     })
 
@@ -21,7 +24,7 @@ readdir(dir)
 const getPhoto = async (photo, i) => {
     try {
         const rs = await axios.get(photo, { responseType: 'arraybuffer', timeout: 20000 })
-        console.log(`Got photo #${i}`);
+        console.log(`Got photo #${i}`)
 
         return Buffer.from(rs.data, 'binary').toString('base64')
     }
@@ -29,8 +32,6 @@ const getPhoto = async (photo, i) => {
         throw new Error(`Error parsing base64 ${photo}, ${err}`)
     }
 }
-
-const wait = t => new Promise(rs => setTimeout(() => rs(true), t))
 
 const map = async (links) => {
     const promises = []
@@ -58,7 +59,7 @@ map(links)
         console.log(`Starting to write ${files.length} files`)
 
         for (let i = 0; i < files.length; i++) {
-            const { user, photo } = files[i];
+            const { user, photo } = files[i]
 
             const func = async () => {
                 const photos = await readdir(`${__dirname}/photos/`)
