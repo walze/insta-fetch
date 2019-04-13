@@ -6,9 +6,11 @@ export const getLinks = () => [...document.body.querySelectorAll('[href]')]
     .filter(link => /https:\/\/www\.instagram\.com\/p\//.test(link))
 
 
-export const saveLinks = file => e => {
+export const saveLinks = files => e => {
     const evtobj = window.event ? event : e
-    if (evtobj.keyCode == 90 && evtobj.ctrlKey) downloadJson(file, 'links')
+    if (evtobj.keyCode == 90 && evtobj.ctrlKey) {
+        files.map((file, i) => downloadJson(file, `links_${i}`))
+    }
 }
 
 export const links = getLinks()
@@ -93,12 +95,6 @@ export const getIFrameData = async iframe => {
     return obj
 }
 
-export const getDataFromIFrame = async arr => {
-    const datas = arr.map(link => makeIFrame(link))
-    const iframes = await Promise.all(datas)
-
-    return iframes.map(getIFrameData)
-}
 
 export const getLinkData = async html => {
     const div = document.createElement('div')

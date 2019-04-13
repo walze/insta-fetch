@@ -1,6 +1,6 @@
 import Queue from 'promise-queue'
 
-import { getLinkData, saveLinks } from './DOM'
+import { getLinkData, saveLinks, getIFrameData, makeIFrame } from './DOM'
 import { ADDED_LINKS, LISTENING_LINKS, emitter } from '../events'
 
 const maxConcurrent = 1
@@ -8,7 +8,8 @@ const maxQueue = Infinity
 const queue = new Queue(maxConcurrent, maxQueue)
 
 
-const fetchLinkData = link => fetch(link)
+export const fetchIFrameData = link => getIFrameData(makeIFrame(link))
+export const fetchLinkData = link => fetch(link)
     .then(r => r.text())
     .then(getLinkData)
 
@@ -49,4 +50,4 @@ emitter.emit(LISTENING_LINKS)
 console.log('photos ref', photos)
 
 console.log('\nCTRL + Z to download')
-document.onkeydown = saveLinks(photos)
+document.onkeydown = saveLinks([photos])
