@@ -7,18 +7,22 @@ const path = require('path')
 const readdir = promisify(fs.readdir)
 const writeFile = promisify(fs.writeFile)
 
+/** @type {string[]} */
+const links = require('../links.json')
+const escapeRegExp = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 const dir = `${__dirname}/photos/`
+
+
 if (!fs.existsSync(dir))
     fs.mkdirSync(dir)
 
-readdir(dir)
-    .then(files => {
-        for (const file of files) {
-            fs.unlink(path.join(dir, file), err => {
-                if (err) throw err
-            })
-        }
-    })
+readdir(dir).then(files => {
+    for (const file of files) {
+        fs.unlink(path.join(dir, file), err => {
+            if (err) throw err
+        })
+    }
+})
 
 
 const getPhoto = async (photo, i) => {
@@ -48,11 +52,7 @@ const map = async (links) => {
     return Promise.all(promises)
 }
 
-/** @type {string[]} */
-const links = require('../links.json')
 
-
-const escapeRegExp = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 map(links)
     .then(async files => {
