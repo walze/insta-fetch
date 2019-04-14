@@ -1,7 +1,8 @@
 import '@babel/polyfill'
+import LazyLoad from 'vanilla-lazyload'
 
 import * as photos from '../node/photos/**.png'
-import LazyLoad from 'vanilla-lazyload'
+import { mapObj } from './../helpers'
 
 
 const $main = document.body
@@ -25,10 +26,10 @@ const makeImg = (base64, user = '', size) => {
     return img
 }
 
-for (const key in photos) {
-    const url = photos[key]
+
+mapObj(photos, (url, key) => {
     const rgx = /(.*)__\(\d+\)__(\d+)x(\d+)/
-    if (!key.match(rgx)) continue
+    if (!key.match(rgx)) return
 
     const [, user, width, height] = key.match(rgx)
     const img = makeImg(escape(url), user, { width, height })
@@ -40,7 +41,7 @@ for (const key in photos) {
     })
 
     $main.append(img)
-}
+})
 
 
 const ll = new LazyLoad({

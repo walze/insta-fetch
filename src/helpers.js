@@ -21,3 +21,21 @@ export const downloadJson = (exportObj, exportName) => {
     downloadAnchorNode.click()
     downloadAnchorNode.remove()
 }
+
+/**
+ * @template T, S
+ * @param { T } obj
+ * @param { (item: keyof T, property: string) => S } cb
+ * @returns { S[] }
+ */
+export function mapObj(obj, cb) {
+    const arr = []
+
+    for (const key in obj) if (obj.hasOwnProperty(key)) {
+        const item = obj[key]
+
+        arr.push(cb(item, key))
+    }
+
+    return arr
+}
