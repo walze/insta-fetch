@@ -3,9 +3,11 @@ const { default: axios } = require('axios')
 const fs = require('fs')
 const { promisify } = require('util')
 const path = require('path')
+const sizeOf = require('image-size')
 
 const readdir = promisify(fs.readdir)
 const writeFile = promisify(fs.writeFile)
+const rename = promisify(fs.rename)
 
 /** @type {string[]} */
 const links = require('../links.json')
@@ -24,6 +26,8 @@ readdir(dir).then(files => {
     }
 })
 
+
+const getSize = path => sizeOf(path)
 
 const getPhoto = async (photo, i) => {
     try {
@@ -65,15 +69,25 @@ map(links)
                 const photos = await readdir(`${__dirname}/photos/`)
                 const rgx = new RegExp(escapeRegExp(user))
                 const count = photos.filter(a => rgx.test(a)).length
-                const filename = `${user} (${count})`
-                const filePath = __dirname + `/photos/${filename}.png`
 
-                return writeFile(
-                    filePath,
+                const filePath = `${__dirname}/photos`
+                const filename = `${user}__(${count})`
+                const ext = 'png'
+                const file1 = `${filePath}/${filename}.${ext}`
+
+                await writeFile(
+                    file1,
                     photo,
                     { encoding: 'base64' }
                 )
-                    .then(() => filename)
+
+                const size = await getSize(file1)
+                const { width, height } = size
+
+                const file2 = `${filePath}/${filename}__${width}x${height}.${ext}`
+                await rename(file1, file2)
+
+                return file2
             }
 
             await func()
