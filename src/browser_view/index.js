@@ -2,7 +2,7 @@ import '@babel/polyfill'
 import LazyLoad from 'vanilla-lazyload'
 
 import * as photos from '../node/photos/**.png'
-import { mapObj } from './../helpers'
+import { mapObj, shuffle } from './../helpers'
 
 
 const $main = document.body
@@ -27,7 +27,7 @@ const makeImg = (base64, user = '', size) => {
 }
 
 
-mapObj(photos, (url, key) => {
+const imgs = mapObj(photos, (url, key) => {
     const rgx = /(.*)__\(\d+\)__(\d+)x(\d+)/
     if (!key.match(rgx)) return
 
@@ -40,8 +40,10 @@ mapObj(photos, (url, key) => {
             window.open(url(user))
     })
 
-    $main.append(img)
+    return img
 })
+
+shuffle(imgs).map(img => $main.append(img))
 
 
 const ll = new LazyLoad({
