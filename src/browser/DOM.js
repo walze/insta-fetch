@@ -72,6 +72,7 @@ export const getMetaData = arr => arr
 export const makeIFrame = src => {
     const el = document.createElement('iframe')
     el.src = src
+    el.style.display = 'none'
 
     /**@type { Promise<HTMLIFrameElement> } */
     const load = new Promise(rs => el.onload = () => rs(el))

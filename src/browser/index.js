@@ -1,11 +1,7 @@
-import Queue from 'promise-queue'
 
 import { getLinkData, saveLinks, getIFrameData, makeIFrame } from './DOM'
 import { ADDED_LINKS, LISTENING_LINKS, emitter } from '../events'
-
-const maxConcurrent = Number(prompt('Concurrent')) || 2
-const maxQueue = Infinity
-const queue = new Queue(maxConcurrent, maxQueue)
+import { queue } from './queue'
 
 
 export const fetchIFrameData = link => () => getIFrameData(makeIFrame(link))
@@ -37,7 +33,7 @@ const queueLinks = photos => async (addedLinks) => {
     }
 
     return addedLinks
-        .map(fetchIFrameData)
+        .map(fetchLinkData)
         .map(add2Queue)
         .map(pushPhotos)
 }
