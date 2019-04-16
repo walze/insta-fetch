@@ -27,8 +27,8 @@ const makeImg = (base64, user = '', size) => {
 }
 
 
-const imgs = mapObj(photos, (url, key) => {
-    const rgx = /(.*)__\(\d+\)__(\d+)x(\d+)/
+shuffle(mapObj(photos, (url, key) => {
+    const rgx = /(.*)__\(\d+\)__(\d+)x(\d+)/i
     if (!key.match(rgx)) return
 
     const [, user, width, height] = key.match(rgx)
@@ -41,9 +41,7 @@ const imgs = mapObj(photos, (url, key) => {
     })
 
     return img
-})
-
-shuffle(imgs).map(img => $main.append(img))
+})).map(img => $main.append(img))
 
 
 const ll = new LazyLoad({
