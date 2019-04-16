@@ -68,9 +68,14 @@ export var shuffle = function (arr) {
 
 }
 
+/**
+ * @param { number } w 
+ * @param { number } h 
+ * @returns { number[] } [width, height, total]
+ */
 export const resolution2Ratio = (w, h) => {
     const gcd = (w, h) => (h == 0) ? w : gcd(h, w % h)
     const r = gcd(w, h)
 
-    return [w / r, h / r]
+    return [w / r, h / r, r]
 }   
