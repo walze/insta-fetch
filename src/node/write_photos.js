@@ -4,7 +4,8 @@ const fs = require('fs')
 const { promisify } = require('util')
 const path = require('path')
 const sizeOf = require('image-size')
-const queue = new (require('promise-queue'))(1, Infinity)
+const Queue = require('promise-queue')
+const queue = new Queue(3, Infinity)
 
 const readdir = promisify(fs.readdir)
 const writeFile = promisify(fs.writeFile)
@@ -46,6 +47,8 @@ const getPhoto = async (photo, i) => {
  * @param { Array<{url: string, link: string}> } links
  */
 const generatePromises = (links) => links.map((link, i) => async () => {
+    await (new Promise(rs => setTimeout(rs, 1000)))
+
     const { photo: url, user } = link
     const photo = await getPhoto(url, i)
 
