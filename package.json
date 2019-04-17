@@ -6,7 +6,7 @@
   "scripts": {
     "write": "node src/node/write_photos",
     "build": "parcel build src/browser_view/index.html -d ./docs --no-cache --public-url .",
-    "start": "parcel src/browser_view/index.html --open --no-cache",
+    "start": "parcel src/browser_view/index.html --open --no-cache --log-level 4",
     "dom": "webpack"
   },
   "author": "",
