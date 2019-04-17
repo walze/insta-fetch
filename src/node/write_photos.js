@@ -4,7 +4,8 @@ const fs = require('fs')
 const { promisify } = require('util')
 const path = require('path')
 const sizeOf = require('image-size')
-const queue = new (require('promise-queue'))(1, Infinity)
+const Queue = require('promise-queue')
+const queue = new Queue(3, Infinity)
 
 const readdir = promisify(fs.readdir)
 const writeFile = promisify(fs.writeFile)
@@ -12,7 +13,6 @@ const rename = promisify(fs.rename)
 
 /** @type { Array<{url: string, link: string}> } */
 const links = require('../links.json')
-const escapeRegExp = str => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 const dir = `${__dirname}/photos/`
 
 
@@ -46,6 +46,8 @@ const getPhoto = async (photo, i) => {
  * @param { Array<{url: string, link: string}> } links
  */
 const generatePromises = (links) => links.map((link, i) => async () => {
+    // await (new Promise(rs => setTimeout(rs, 50)))
+
     const { photo: url, user } = link
     const photo = await getPhoto(url, i)
 
@@ -53,13 +55,9 @@ const generatePromises = (links) => links.map((link, i) => async () => {
 })
 
 
-const writePhoto = async (user, photo) => {
-    const photos = await readdir(`${__dirname}/photos/`)
-    const rgx = new RegExp(escapeRegExp(user))
-    const count = photos.filter(a => rgx.test(a)).length
-
+const writePhoto = async (id, user, photo) => {
     const filePath = `${__dirname}/photos`
-    const filename = `${user}__(${count})`
+    const filename = `${user}__(${id})`
     const ext = 'png'
     const file1 = `${filePath}/${filename}.${ext}`
 
@@ -88,10 +86,12 @@ const add2Queue = p => queue.add(p)
 
 generatePromises(links)
     .map(add2Queue)
-    .map(async dataPromise => {
+    .map(async (dataPromise, i) => {
         const { user, photo } = await dataPromise
 
-        return writePhoto(user, photo)
+        return writePhoto(i, user, photo)
             .then(f => console.log(`wrote file ${f}`))
-            .catch(console.error)
+            .catch(e => {
+                throw new Error(e)
+            })
     })
