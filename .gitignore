@@ -1,6 +1,6 @@
 src/**/data/*
 
-src/**/photos/*
+src/**/photos/*.png
 
 dist/
 
