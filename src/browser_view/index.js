@@ -2,19 +2,25 @@ import '@babel/polyfill'
 import LazyLoad from 'vanilla-lazyload'
 
 import * as photos from '../node/photos/**.png'
-import { mapObj, shuffle } from './../helpers'
+import { mapObj, shuffle, resolution2Ratio } from './../helpers'
 
 
 const $main = document.body
 
-const makeImg = (base64, user = '', size) => {
+const makeImg = (base64, user = '', { width, height }) => {
     const container = document.createElement('div')
     container.classList.add('img')
 
-    const img = new Image(
-        size.width / 4,
-        size.height / 4
-    )
+    const [Rx, Ry] = resolution2Ratio(width, height)
+
+    const photoX = (window.innerWidth / 5) - 3
+    const photoY = (Ry * photoX) / Rx
+
+    const img = new Image()
+
+    img.style.width = `${photoX}px`
+    img.style.height = `${photoY}px`
+    img.style.margin = 0
 
     img.dataset.src = base64
     img.dataset.user = user

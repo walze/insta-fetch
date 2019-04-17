@@ -46,8 +46,6 @@ const getPhoto = async (photo, i) => {
  * @param { Array<{url: string, link: string}> } links
  */
 const generatePromises = (links) => links.map((link, i) => async () => {
-    // await (new Promise(rs => setTimeout(rs, 50)))
-
     const { photo: url, user } = link
     const photo = await getPhoto(url, i)
 
