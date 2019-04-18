@@ -2,6 +2,12 @@ import '@babel/polyfill'
 import LazyLoad from 'vanilla-lazyload'
 
 import * as photos from '../node/photos/**.png'
+
+/** @type { {id: number, user: string, width: number, height: number}[] } */
+import photosData from '../links_data.json'
+
+console.log(photosData)
+
 import { mapObj, shuffle, resolution2Ratio } from './../helpers'
 
 console.log('Photos', photos)
@@ -34,11 +40,13 @@ const makeImg = (base64, user = '', { width, height }) => {
 
 
 shuffle(mapObj(photos, (url, key) => {
-    const rgx = /(.*)__\(\d+\)__(\d+)x(\d+)/i
+    const rgx = /(\d+)/i
     const match = key.match(rgx)
     if (!match) return
 
-    const [, user, width, height] = match
+    const [, id] = match
+    const { user, width, height } = photosData.find(data => data.id === Number(id))
+
     const img = makeImg(escape(url), user, { width, height })
 
     img.addEventListener('click', () => {

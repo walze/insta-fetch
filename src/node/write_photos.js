@@ -9,7 +9,7 @@ const queue = new Queue(3, Infinity)
 
 const readdir = promisify(fs.readdir)
 const writeFile = promisify(fs.writeFile)
-const rename = promisify(fs.rename)
+// const rename = promisify(fs.rename)
 
 /** @type { Array<{url: string, link: string}> } */
 const links = require('../links.json')
@@ -30,11 +30,9 @@ readdir(dir).then(files => {
 
 const getSize = path => sizeOf(path)
 
-const getPhoto = async (photo, i) => {
+const getPhoto = async photo => {
     try {
         const rs = await axios.get(photo, { responseType: 'arraybuffer', timeout: 20000 })
-        console.log(`Got photo #${i}`)
-
         return Buffer.from(rs.data, 'binary').toString('base64')
     }
     catch (err) {
@@ -55,7 +53,7 @@ const generatePromises = (links) => links.map((link, i) => async () => {
 
 const writePhoto = async (id, user, photo) => {
     const filePath = `${__dirname}/photos`
-    const filename = `${user}__(${id})`
+    const filename = id
     const ext = 'png'
     const file1 = `${filePath}/${filename}.${ext}`
 
@@ -68,10 +66,18 @@ const writePhoto = async (id, user, photo) => {
     const size = await getSize(file1)
     const { width, height } = size
 
-    const file2 = `${filePath}/${filename}__${width}x${height}.${ext}`
-    await rename(file1, file2)
+    // const file2 = `${filePath}/${filename}__${width}x${height}.${ext}`
+    // await rename(file1, file2)
 
-    return file2
+    console.log(`wrote file ${file1}`)
+
+    return {
+        id,
+        user,
+        filename,
+        width,
+        height,
+    }
 }
 
 /**
@@ -82,14 +88,15 @@ const writePhoto = async (id, user, photo) => {
  */
 const add2Queue = p => queue.add(p)
 
-generatePromises(links)
+Promise.all(generatePromises(links)
     .map(add2Queue)
     .map(async (dataPromise, i) => {
         const { user, photo } = await dataPromise
 
         return writePhoto(i, user, photo)
-            .then(f => console.log(`wrote file ${f}`))
             .catch(e => {
                 throw new Error(e)
             })
-    })
+    }))
+    .then(data => writeFile('../links_data.json', JSON.stringify(data)))
+
