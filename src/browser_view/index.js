@@ -4,6 +4,7 @@ import LazyLoad from 'vanilla-lazyload'
 import * as photos from '../node/photos/**.png'
 import { mapObj, shuffle, resolution2Ratio } from './../helpers'
 
+console.log('Photos', photos)
 
 const $main = document.body
 
@@ -21,6 +22,7 @@ const makeImg = (base64, user = '', { width, height }) => {
     img.style.width = `${x}px`
     img.style.height = `${y}px`
     img.style.margin = 0
+    img.style.marginBottom = '1rem'
 
     img.dataset.src = base64
     img.dataset.user = user
@@ -33,9 +35,10 @@ const makeImg = (base64, user = '', { width, height }) => {
 
 shuffle(mapObj(photos, (url, key) => {
     const rgx = /(.*)__\(\d+\)__(\d+)x(\d+)/i
-    if (!key.match(rgx)) return
+    const match = key.match(rgx)
+    if (!match) return
 
-    const [, user, width, height] = key.match(rgx)
+    const [, user, width, height] = match
     const img = makeImg(escape(url), user, { width, height })
 
     img.addEventListener('click', () => {
