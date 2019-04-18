@@ -98,5 +98,5 @@ Promise.all(generatePromises(links)
                 throw new Error(e)
             })
     }))
-    .then(data => writeFile('../links_data.json', JSON.stringify(data)))
+    .then(data => writeFile(__dirname + '/../links_data.json', JSON.stringify(data)))
 
