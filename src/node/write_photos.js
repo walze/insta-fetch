@@ -50,10 +50,11 @@ const generatePromises = (links) => links.map((link, i) => async () => {
     return { user, photo }
 })
 
+const makeHash = () => (Math.random() * 100000000000000000).toString(36).replace(/[^a-z0-9]+/g, '')
 
 const writePhoto = async (id, user, photo) => {
     const filePath = `${__dirname}/photos`
-    const filename = id
+    const filename = makeHash()
     const ext = 'png'
     const file1 = `${filePath}/${filename}.${ext}`
 

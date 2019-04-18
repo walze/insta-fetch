@@ -40,12 +40,11 @@ const makeImg = (base64, user = '', { width, height }) => {
 
 
 shuffle(mapObj(photos, (url, key) => {
-    const rgx = /(\d+)/i
-    const match = key.match(rgx)
-    if (!match) return
+    const [filename] = key.split('.')
+    const found = photosData.find(data => data.filename === filename)
+    if (!found) return
 
-    const [, id] = match
-    const { user, width, height } = photosData.find(data => data.id === Number(id))
+    const { user, width, height } = found
 
     const img = makeImg(escape(url), user, { width, height })
 

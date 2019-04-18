@@ -78,4 +78,4 @@ export const resolution2Ratio = (w, h) => {
     const r = gcd(w, h)
 
     return [w / r, h / r, r]
-}   
+}
