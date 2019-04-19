@@ -1,7 +1,7 @@
 import '@babel/polyfill'
 import LazyLoad from 'vanilla-lazyload'
 
-import { mapFindObj, shuffle, resolution2Ratio, sortAsc, sortDesc, toggleHide } from './../helpers'
+import { mapFindObj, shuffle, resolution2Ratio, sortAsc, toggleHide } from './../helpers'
 import * as photos from '../node/photos/**.png'
 import photosData from '../links_data.json'
 
@@ -41,10 +41,13 @@ const updateImgStyles = (width, height, img) => {
     img.style.marginBottom = '1rem'
 }
 
-const makeImg = (base64, user = '', { width, height }) => {
+const makeImg = (base64, imgData) => {
+    const { id, width, height, user } = imgData
+
     const img = new Image()
     img.classList.add('lazy')
 
+    img.dataset.id = id
     img.dataset.width = width
     img.dataset.height = height
     img.dataset.src = base64
@@ -57,11 +60,16 @@ const makeImg = (base64, user = '', { width, height }) => {
 const renderImgs = (imgs, order) => {
     $main.innerHTML = ''
 
-    let orderedImgs = [...imgs]
+    let orderedImgs = imgs
 
-    if (order === 'desc') orderedImgs = [...imgs].reverse()
-    else if (order === 'name-asc') orderedImgs = [...imgs].sort((a, b) => sortAsc(a.dataset.user, b.dataset.user))
-    else if (order === 'name-desc') orderedImgs = [...imgs].sort((a, b) => sortDesc(a.dataset.user, b.dataset.user))
+    if (order === 'asc')
+        orderedImgs = [...imgs].sort((a, b) => sortAsc(Number(a.dataset.id), Number(b.dataset.id)))
+    else if (order === 'desc')
+        orderedImgs = [...imgs].sort((a, b) => sortAsc(Number(a.dataset.id), Number(b.dataset.id))).reverse()
+    else if (order === 'name-asc')
+        orderedImgs = [...imgs].sort((a, b) => sortAsc(a.dataset.user, b.dataset.user))
+    else if (order === 'name-desc')
+        orderedImgs = [...imgs].sort((a, b) => sortAsc(a.dataset.user, b.dataset.user)).reverse()
 
     orderedImgs.map(img => {
         const { width, height } = img
@@ -73,13 +81,13 @@ const renderImgs = (imgs, order) => {
 
 
 /** @type {HTMLImageElement[]} */
-const imgs = photosData.map(data => {
-    const { user, width, height, filename } = data
+const imgs = photosData.map(imgData => {
+    const { user, filename } = imgData
 
     const [url] = mapFindObj(photos, (_, key) => key === filename)
     if (!url) return
 
-    const img = makeImg(escape(url), user, { width, height })
+    const img = makeImg(escape(url), imgData)
 
     img.addEventListener('click', () => {
         const url = p => `https://instagram.com/${p}`
