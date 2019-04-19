@@ -41,6 +41,24 @@ export function mapObj(obj, cb) {
 }
 
 /**
+ * @template T
+ * @param { T } obj
+ * @param { (item: keyof T, property: string) => boolean } cb
+ * @returns { [keyof T, string] }
+ */
+export function mapFindObj(obj, cb) {
+    for (const key in obj) if (obj.hasOwnProperty(key)) {
+        const item = obj[key]
+
+        const bool = cb(item, key)
+
+        if (bool) return [item, key]
+    }
+
+    return null
+}
+
+/**
  * Randomly shuffle an array
  * https://stackoverflow.com/a/2450976/1293256
  * @param  {Array} array The array to shuffle

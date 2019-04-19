@@ -1,18 +1,20 @@
 import '@babel/polyfill'
 import LazyLoad from 'vanilla-lazyload'
 
+import { mapFindObj, shuffle, resolution2Ratio } from './../helpers'
 import * as photos from '../node/photos/**.png'
-
-/** @type { {id: number, user: string, width: number, height: number}[] } */
 import photosData from '../links_data.json'
 
+
 console.log(photosData)
-
-import { mapObj, shuffle, resolution2Ratio } from './../helpers'
-
 console.log('Photos', photos)
 
-const $main = document.body
+
+const $main = document.querySelector('.imgs')
+const $shuffle = document.querySelector('.shuffle')
+const $new = document.querySelector('.new')
+const $old = document.querySelector('.old')
+
 
 const makeImg = (base64, user = '', { width, height }) => {
     const img = new Image()
@@ -22,7 +24,7 @@ const makeImg = (base64, user = '', { width, height }) => {
 
     const photoX = (window.innerWidth / 5)
 
-    const x = photoX < 320 ? 320 : photoX
+    const x = photoX < 320 ? 300 : photoX
     const y = (Ry * x) / Rx
 
     img.style.width = `${x}px`
@@ -38,13 +40,18 @@ const makeImg = (base64, user = '', { width, height }) => {
     return img
 }
 
+const renderImgs = imgs => {
+    $main.innerHTML = ''
 
-shuffle(mapObj(photos, (url, key) => {
-    const [filename] = key.split('.')
-    const found = photosData.find(data => data.filename === filename)
-    if (!found) return
+    imgs.map(i => $main.append(i))
+}
 
-    const { user, width, height } = found
+
+const imgs = photosData.map(data => {
+    const { user, width, height, filename } = data
+
+    const [url] = mapFindObj(photos, (_, key) => key === filename)
+    if (!url) return
 
     const img = makeImg(escape(url), user, { width, height })
 
@@ -55,7 +62,15 @@ shuffle(mapObj(photos, (url, key) => {
     })
 
     return img
-})).map(img => $main.append(img))
+})
+
+renderImgs(imgs)
+
+
+$shuffle.addEventListener('click', () => renderImgs(shuffle(imgs)))
+$new.addEventListener('click', () => renderImgs(imgs))
+$old.addEventListener('click', () => renderImgs([...imgs].reverse()))
+
 
 
 const ll = new LazyLoad({
