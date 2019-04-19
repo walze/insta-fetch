@@ -1,7 +1,7 @@
 import '@babel/polyfill'
 import LazyLoad from 'vanilla-lazyload'
 
-import { mapFindObj, shuffle, resolution2Ratio } from './../helpers'
+import { mapFindObj, shuffle, resolution2Ratio, sortAsc, sortDesc } from './../helpers'
 import * as photos from '../node/photos/**.png'
 import photosData from '../links_data.json'
 
@@ -12,8 +12,7 @@ console.log('Photos', photos)
 
 const $main = document.querySelector('.imgs')
 const $shuffle = document.querySelector('.shuffle')
-const $new = document.querySelector('.new')
-const $old = document.querySelector('.old')
+const $select = document.querySelector('.select')
 
 
 const makeImg = (base64, user = '', { width, height }) => {
@@ -24,7 +23,7 @@ const makeImg = (base64, user = '', { width, height }) => {
 
     const photoX = (window.innerWidth / 5)
 
-    const x = photoX < 320 ? 300 : photoX
+    const x = photoX < 320 ? 320 : photoX
     const y = (Ry * x) / Rx
 
     img.style.width = `${x}px`
@@ -63,14 +62,21 @@ const imgs = photosData.map(data => {
 
     return img
 })
+console.log(imgs)
 
-renderImgs(imgs)
+
+renderImgs(shuffle(imgs))
 
 
 $shuffle.addEventListener('click', () => renderImgs(shuffle(imgs)))
-$new.addEventListener('click', () => renderImgs(imgs))
-$old.addEventListener('click', () => renderImgs([...imgs].reverse()))
+$select.addEventListener('change', e => {
+    const { value: order } = e.target
 
+    if (order === 'asc') renderImgs(imgs)
+    else if (order === 'desc') renderImgs([...imgs].reverse())
+    else if (order === 'name-asc') renderImgs([...imgs].sort((a, b) => sortAsc(a.dataset.user, b.dataset.user)))
+    else if (order === 'name-desc') renderImgs([...imgs].sort((a, b) => sortDesc(a.dataset.user, b.dataset.user)))
+})
 
 
 const ll = new LazyLoad({

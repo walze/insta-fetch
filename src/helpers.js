@@ -97,3 +97,23 @@ export const resolution2Ratio = (w, h) => {
 
     return [w / r, h / r, r]
 }
+
+export const sortAsc = (a, b) => {
+    if (a > b) {
+        return 1
+    }
+    if (a < b) {
+        return -1
+    }
+    return 0
+}
+
+export const sortDesc = (a, b) => {
+    if (a < b) {
+        return 1
+    }
+    if (a > b) {
+        return -1
+    }
+    return 0
+}
