@@ -47,6 +47,8 @@ const makeImg = (base64, imgData) => {
     const img = new Image()
     img.classList.add('lazy')
 
+    updateImgStyles(width, height, img)
+
     img.dataset.id = id
     img.dataset.width = width
     img.dataset.height = height
