@@ -117,3 +117,19 @@ export const sortDesc = (a, b) => {
     }
     return 0
 }
+
+/**
+ * @param { HTMLElement } el
+ * @param { string } className
+ */
+export const toggleClassName = (el, className) => {
+    const hasClass = el.classList.contains(className)
+
+    hasClass
+        ? el.classList.remove(className)
+        : el.classList.add(className)
+
+    return hasClass
+}
+
+export const toggleHide = el => toggleClassName(el, 'hidden') 
