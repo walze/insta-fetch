@@ -68,7 +68,10 @@ console.log(imgs)
 renderImgs(shuffle(imgs))
 
 
-$shuffle.addEventListener('click', () => renderImgs(shuffle(imgs)))
+$shuffle.addEventListener('click', () => {
+    renderImgs(shuffle(imgs))
+    $select.value = null
+})
 $select.addEventListener('change', e => {
     const { value: order } = e.target
 
