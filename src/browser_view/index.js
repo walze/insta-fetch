@@ -73,13 +73,17 @@ const renderImgs = (imgs, order) => {
     else if (order === 'name-desc')
         orderedImgs = [...imgs].sort((a, b) => sortAsc(a.dataset.user, b.dataset.user)).reverse()
 
-    orderedImgs.map(img => {
-        const { dataset } = img
-        const { width, height } = dataset
+    const updatedImgs = orderedImgs
+        .map(img => {
+            const { dataset } = img
+            const { width, height } = dataset
 
-        updateImgStyles(width, height, img)
-        $main.append(img)
-    })
+            updateImgStyles(width, height, img)
+
+            return img
+        })
+
+    $main.append(...updatedImgs)
 }
 
 
