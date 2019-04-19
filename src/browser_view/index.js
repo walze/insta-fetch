@@ -13,6 +13,7 @@ const $select = document.querySelector('.select')
 const $options = document.querySelector('.btn.options')
 const $save = document.querySelector('.btn.save')
 const $optionsForm = document.querySelector('.form.options')
+let orderState
 
 const options = {
     get photosPerRow() {
@@ -44,8 +45,6 @@ const makeImg = (base64, user = '', { width, height }) => {
     const img = new Image()
     img.classList.add('lazy')
 
-    updateImgStyles(width, height, img)
-
     img.dataset.width = width
     img.dataset.height = height
     img.dataset.src = base64
@@ -64,7 +63,12 @@ const renderImgs = (imgs, order) => {
     else if (order === 'name-asc') orderedImgs = [...imgs].sort((a, b) => sortAsc(a.dataset.user, b.dataset.user))
     else if (order === 'name-desc') orderedImgs = [...imgs].sort((a, b) => sortDesc(a.dataset.user, b.dataset.user))
 
-    orderedImgs.map(img => $main.append(img))
+    orderedImgs.map(img => {
+        const { width, height } = img
+
+        updateImgStyles(width, height, img)
+        $main.append(img)
+    })
 }
 
 
@@ -88,7 +92,7 @@ const imgs = photosData.map(data => {
 
 
 // first render
-renderImgs(shuffle(imgs))
+renderImgs(shuffle(imgs), orderState)
 
 
 
@@ -99,6 +103,7 @@ $shuffle.addEventListener('click', () => {
 })
 $select.addEventListener('change', e => {
     const { value: order } = e.target
+    orderState = order
 
     renderImgs(imgs, order)
 })
@@ -106,11 +111,7 @@ $options.addEventListener('click', () => {
     const hadClass = toggleHide($optionsForm)
 
     if (!hadClass) {
-        imgs.map(img => updateImgStyles(
-            img.width,
-            img.height,
-            img
-        ))
+        renderImgs(imgs, orderState)
     }
 })
 $save.addEventListener('click', () => $options.click())
