@@ -5,11 +5,14 @@ const { promisify } = require('util')
 const path = require('path')
 const sizeOf = require('image-size')
 const Queue = require('promise-queue')
-const queue = new Queue(3, Infinity)
+
 
 const readdir = promisify(fs.readdir)
 const writeFile = promisify(fs.writeFile)
 // const rename = promisify(fs.rename)
+
+const queue = new Queue(3, Infinity)
+// const wait = t => new Promise(rs => setTimeout(rs, t))
 
 /** @type { Array<{url: string, link: string}> } */
 const links = require('../links.json')
@@ -36,7 +39,9 @@ const getPhoto = async photo => {
         return Buffer.from(rs.data, 'binary').toString('base64')
     }
     catch (err) {
-        throw new Error(`Error parsing base64 ${photo}, ${err}`)
+        const str = `Error parsing base64 ${photo}, ${err}`
+
+        console.warn(str)
     }
 }
 
@@ -50,11 +55,9 @@ const generatePromises = (links) => links.map((link, i) => async () => {
     return { user, photo }
 })
 
-const makeHash = () => (Math.random() * 100000000000000000).toString(36).replace(/[^a-z0-9]+/g, '')
-
 const writePhoto = async (id, user, photo) => {
     const filePath = `${__dirname}/photos`
-    const filename = makeHash()
+    const filename = String(new Date().getTime())
     const ext = 'png'
     const file1 = `${filePath}/${filename}.${ext}`
 
@@ -66,9 +69,6 @@ const writePhoto = async (id, user, photo) => {
 
     const size = await getSize(file1)
     const { width, height } = size
-
-    // const file2 = `${filePath}/${filename}__${width}x${height}.${ext}`
-    // await rename(file1, file2)
 
     console.log(`wrote file ${file1}`)
 
@@ -89,15 +89,26 @@ const writePhoto = async (id, user, photo) => {
  */
 const add2Queue = p => queue.add(p)
 
-Promise.all(generatePromises(links)
+const metadatas = generatePromises(links)
     .map(add2Queue)
     .map(async (dataPromise, i) => {
         const { user, photo } = await dataPromise
 
-        return writePhoto(i, user, photo)
-            .catch(e => {
-                throw new Error(e)
-            })
-    }))
-    .then(data => writeFile(__dirname + '/../links_data.json', JSON.stringify(data)))
+        const metadata = writePhoto(i, user, photo)
+            .catch(() => null)
+
+        return metadata
+    })
+
+
+Promise
+    .all(metadatas)
+    .then(data => {
+        const filtered = data.filter(a => !!a)
+
+        writeFile(
+            __dirname + '/../photos_metadata.json',
+            JSON.stringify(filtered)
+        )
+    })
 

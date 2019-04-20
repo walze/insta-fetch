@@ -3,9 +3,7 @@ import LazyLoad from 'vanilla-lazyload'
 
 import { mapFindObj, shuffle, resolution2Ratio, sortAsc, toggleHide } from './../helpers'
 import * as photos from '../node/photos/**.png'
-import photosData from '../links_data.json'
-
-
+import photosData from '../photos_metadata.json'
 
 const $main = document.querySelector('.imgs')
 const $shuffle = document.querySelector('.shuffle')
@@ -88,22 +86,26 @@ const renderImgs = (imgs, order) => {
 
 
 /** @type {HTMLImageElement[]} */
-const imgs = photosData.map(imgData => {
-    const { user, filename } = imgData
+const imgs = photosData
+    .map(imgData => {
+        if (!imgData) return
 
-    const [url] = mapFindObj(photos, (_, key) => key === filename)
-    if (!url) return
+        const { user, filename } = imgData
 
-    const img = makeImg(escape(url), imgData)
+        const [url] = mapFindObj(photos, (_, key) => key === filename)
+        if (!url) return
 
-    img.addEventListener('click', () => {
-        const url = p => `https://instagram.com/${p}`
-        if (confirm(`@${user}, open profile?`))
-            window.open(url(user))
+        const img = makeImg(escape(url), imgData)
+
+        img.addEventListener('click', () => {
+            const url = p => `https://instagram.com/${p}`
+            if (confirm(`@${user}, open profile?`))
+                window.open(url(user))
+        })
+
+        return img
     })
-
-    return img
-})
+    .filter(a => !!a)
 
 
 // first render

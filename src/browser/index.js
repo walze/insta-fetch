@@ -12,11 +12,6 @@ export const fetchLinkData = link => () => fetch(link)
 
 const add2Queue = pg => {
     const q = queue.add(pg)
-    const pending = queue.getPendingLength()
-    const length = queue.getQueueLength()
-
-    console.log('Queue Pending', pending)
-    console.log('Queue Length', length)
 
     return q
 }
@@ -25,8 +20,6 @@ const add2Queue = pg => {
  * @param { string[] } addedLinks 
  */
 const queueLinks = photos => async (addedLinks) => {
-    console.log('found new links', addedLinks)
-
     const pushPhotos = async photoPromise => {
         photos.push(await photoPromise)
         return photoPromise
