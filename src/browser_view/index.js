@@ -40,7 +40,7 @@ const updateImgStyles = (width, height, img) => {
 }
 
 const makeImg = (base64, imgData) => {
-    const { id, width, height, user } = imgData
+    const { id, width, height, user, index, url } = imgData
 
     const img = new Image()
     img.classList.add('lazy')
@@ -48,6 +48,8 @@ const makeImg = (base64, imgData) => {
     updateImgStyles(width, height, img)
 
     img.dataset.id = id
+    img.dataset.url = url
+    img.dataset.index = index
     img.dataset.width = width
     img.dataset.height = height
     img.dataset.src = base64
@@ -63,9 +65,9 @@ const renderImgs = (imgs, order) => {
     let orderedImgs = imgs
 
     if (order === 'asc')
-        orderedImgs = [...imgs].sort((a, b) => sortAsc(Number(a.dataset.id), Number(b.dataset.id)))
+        orderedImgs = [...imgs].sort((a, b) => sortAsc(Number(a.dataset.index), Number(b.dataset.index)))
     else if (order === 'desc')
-        orderedImgs = [...imgs].sort((a, b) => sortAsc(Number(a.dataset.id), Number(b.dataset.id))).reverse()
+        orderedImgs = [...imgs].sort((a, b) => sortAsc(Number(a.dataset.index), Number(b.dataset.index))).reverse()
     else if (order === 'name-asc')
         orderedImgs = [...imgs].sort((a, b) => sortAsc(a.dataset.user, b.dataset.user))
     else if (order === 'name-desc')
