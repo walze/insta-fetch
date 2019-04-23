@@ -3,7 +3,7 @@ import LazyLoad from 'vanilla-lazyload'
 
 import { mapFindObj, shuffle, resolution2Ratio, sortAsc, toggleHide } from './../helpers'
 import * as photos from '../node/photos/**.png'
-import photosData from '../photos_metadata.json'
+import imgsData from '../photos_metadata.json'
 
 const $main = document.querySelector('.imgs')
 const $shuffle = document.querySelector('.shuffle')
@@ -86,7 +86,7 @@ const renderImgs = (imgs, order) => {
 
 
 /** @type {HTMLImageElement[]} */
-const imgs = photosData
+const imgs = imgsData
     .map(imgData => {
         if (!imgData) return
 
@@ -140,7 +140,7 @@ const ll = new LazyLoad({ elements_selector: 'img' })
 // logs
 console.log(ll)
 console.log(imgs)
-console.log(photosData)
+console.log(imgsData)
 console.log('Photos', photos)
 
 

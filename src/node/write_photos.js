@@ -46,18 +46,18 @@ const getPhoto = async photo => {
 }
 
 /**
- * @param { Array<{url: string, link: string}> } links
+ * @param { Array<{}> } links
  */
 const generatePromises = (links) => links.map((link, i) => async () => {
-    const { photo: url, user } = link
+    const { image: url, user } = link
     const photo = await getPhoto(url, i)
 
-    return { user, photo }
+    return { ...link, user, photo, index: i }
 })
 
 const writePhoto = async (id, user, photo) => {
     const filePath = `${__dirname}/photos`
-    const filename = String(new Date().getTime())
+    const filename = id
     const ext = 'png'
     const file1 = `${filePath}/${filename}.${ext}`
 
@@ -73,7 +73,6 @@ const writePhoto = async (id, user, photo) => {
     console.log(`wrote file ${file1}`)
 
     return {
-        id,
         user,
         filename,
         width,
@@ -91,13 +90,16 @@ const add2Queue = p => queue.add(p)
 
 const metadatas = generatePromises(links)
     .map(add2Queue)
-    .map(async (dataPromise, i) => {
-        const { user, photo } = await dataPromise
+    .map(async (dataPromise) => {
+        const obj = await dataPromise
+        const { id, user, photo } = obj
 
-        const metadata = writePhoto(i, user, photo)
+        const metadata = await writePhoto(id, user, photo)
             .catch(() => null)
 
-        return metadata
+        delete obj.photo
+
+        return { ...obj, ...metadata }
     })
 
 

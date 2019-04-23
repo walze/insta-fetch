@@ -49,25 +49,41 @@ emitter.on(LISTENING_LINKS, () => {
     listenLinks()
 })
 
-export const getMetaData = arr => arr
-    .map(meta => {
+/** 
+ * @param { HTMLMetaElement[] } arr
+ */
+export const getMetaData = arr => {
+    const metaData = arr.map(meta => {
         const { content } = meta
         const name = meta.getAttribute('property')
 
         return { name, content }
     })
-    .filter(a => a.name && a.name.match(/og:.+/))
-    .map(meta => {
-        let name = meta.name.replace('og:', '')
-        const match = meta.content.match(/@([^\s)]+)/)
-        if (name === 'description') {
-            meta.content = match[1]
-        }
+        .filter(a => a.name && a.name.match(/og:.+/))
+        .map(meta => {
+            /** @type { 'title' | 'image' | 'description' | 'url' | 'type' } */
+            let name = meta.name.replace('og:', '')
 
-        if (name === 'image' || name === 'description')
-            return meta.content
-    })
-    .filter(a => !!a)
+            return { [name]: meta.content }
+        })
+        .filter(a => !!a)
+        .reduce((a, b) => {
+            for (const key in b) if (b.hasOwnProperty(key)) {
+                const element = b[key]
+
+                return {
+                    ...a,
+                    [key]: element
+                }
+            }
+        })
+
+    metaData.user = metaData.description.match(/@([^\s)]+)/)[1]
+    metaData.id = metaData.url.split(/\/(.+?)\//)[3]
+
+    return metaData
+}
+
 
 export const makeIFrame = src => {
     const el = document.createElement('iframe')
@@ -87,13 +103,12 @@ export const makeIFrame = src => {
 export const getIFrameData = async iframe => {
     const el = await iframe.add()
 
-    const [photo, user] = getMetaData([...el.contentWindow.document.querySelectorAll('meta')])
-    console.info(`Got photo from @${user}`)
+    const data = getMetaData([...el.contentWindow.document.querySelectorAll('meta')])
+    console.info(`Got image from @${data.user}`)
 
-    const obj = { user, photo }
     iframe.remove()
 
-    return obj
+    return data
 }
 
 
@@ -101,10 +116,8 @@ export const getLinkData = async html => {
     const div = document.createElement('div')
     div.innerHTML = html
 
-    const [photo, user] = getMetaData([...div.querySelectorAll('meta')])
-    console.info(`Got photo from @${user}`)
+    const data = getMetaData([...div.querySelectorAll('meta')])
+    console.info(`Got image from @${data.user}`)
 
-    const obj = { user, photo }
-
-    return obj
+    return data
 }
