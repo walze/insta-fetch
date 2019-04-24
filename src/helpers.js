@@ -61,14 +61,15 @@ export function mapFindObj(obj, cb) {
 /**
  * Randomly shuffle an array
  * https://stackoverflow.com/a/2450976/1293256
- * @param  {Array} array The array to shuffle
- * @return { Array }      The first item in the shuffled array
+ * @template T
+ * @param  { T[] } arr The array to shuffle
+ * @return { T[] }      The first item in the shuffled array
  */
-export var shuffle = function (arr) {
+export const shuffle = arr => {
     const array = [...arr]
 
-    var currentIndex = array.length
-    var temporaryValue, randomIndex
+    let currentIndex = array.length
+    let temporaryValue, randomIndex
 
     // While there remain elements to shuffle...
     while (0 !== currentIndex) {
@@ -83,7 +84,6 @@ export var shuffle = function (arr) {
     }
 
     return array
-
 }
 
 /**
@@ -95,16 +95,17 @@ export const resolution2Ratio = (w, h) => {
     const gcd = (w, h) => (h == 0) ? w : gcd(h, w % h)
     const r = gcd(w, h)
 
-    return [w / r, h / r, r]
+    return [
+        w / r,
+        h / r,
+        r
+    ]
 }
 
 export const sortAsc = (a, b) => {
-    if (a > b) {
-        return 1
-    }
-    if (a < b) {
-        return -1
-    }
+    if (a > b) return 1
+    if (a < b) return -1
+
     return 0
 }
 
