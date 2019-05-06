@@ -52,7 +52,8 @@ img {
 .btn,
 select,
 input {
-  background: white;
+  background: #222;
+  color: white;
   border: 1px solid black;
   display: flex;
   justify-content: center;
@@ -68,7 +69,8 @@ input {
 
 .form.options {
   border: 1px solid black;
-  background: white;
+  background: #222;
+  color: white;
   width: 250px;
 
   position: fixed;

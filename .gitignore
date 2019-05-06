@@ -5,6 +5,8 @@ src/**/photos/*.png
 dist/
 
 *.har
+*.zip
+*.7z
 src/*.json
 har_photos_base64.json
 
