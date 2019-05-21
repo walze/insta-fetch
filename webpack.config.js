@@ -3,9 +3,7 @@ const TerserPlugin = require('terser-webpack-plugin')
 
 module.exports = {
     devtool: 'inline-source-map',
-    mode: 'production',
     entry: './src/browser/index.js',
-    watch: true,
     module: {
         rules: [
 

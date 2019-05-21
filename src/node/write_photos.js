@@ -70,14 +70,15 @@ const writePhoto = async (id, user, photo) => {
     const size = await getSize(file1)
     const { width, height } = size
 
-    console.log(`wrote file ${file1}`)
 
-    return {
+    const metadata = {
         user,
         filename,
         width,
         height,
     }
+
+    return [metadata, file1]
 }
 
 /**
@@ -90,12 +91,14 @@ const add2Queue = p => queue.add(p)
 
 const metadatas = generatePromises(links)
     .map(add2Queue)
-    .map(async (dataPromise) => {
+    .map(async (dataPromise, i) => {
         const obj = await dataPromise
         const { id, user, photo } = obj
 
-        const metadata = await writePhoto(id, user, photo)
+        const [metadata, filename] = await writePhoto(id, user, photo)
             .catch(() => null)
+
+        console.log(`wrote file ${filename} || ${Math.ceil(i / links.length * 100)}%`)
 
         delete obj.photo
 
