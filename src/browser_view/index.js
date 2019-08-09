@@ -10,7 +10,7 @@ import _psJ from '../sizes.json'
 /** @type { Ips[] } */
 const psJ = _psJ
 
-console.log(psJ)
+console.log(psJ, _ps)
 
 shuffle(Object.entries(_ps))
     .map(([file, path]) => {
