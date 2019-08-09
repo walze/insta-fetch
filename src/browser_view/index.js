@@ -24,7 +24,6 @@ shuffle(Object.entries(_ps))
         img.width = width
         img.height = height
 
-
         document.querySelector('.imgs').appendChild(img)
     })
 
