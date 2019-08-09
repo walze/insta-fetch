@@ -1,7 +1,7 @@
 import '@babel/polyfill'
 import LazyLoad from 'vanilla-lazyload'
 
-import { shuffle } from './../helpers'
+import { shuffle, resolution2Ratio } from './../helpers'
 
 
 import _ps from '../node/photos_filter/**.png'
@@ -18,11 +18,13 @@ shuffle(Object.entries(_ps))
         const img = new Image()
         const { width, height } = psJ.find(({ key }) => key === keyPhoto)
 
+        const [rx, ry] = resolution2Ratio(width, height)
+
         img.dataset.src = path
-        img.dataset.width = width
-        img.dataset.height = height
-        img.width = width
-        img.height = height
+        img.dataset.width = 320
+        img.dataset.height = (ry * 320) / rx
+        img.width = 320
+        img.height = (ry * 320) / rx
 
         document.querySelector('.imgs').appendChild(img)
     })
