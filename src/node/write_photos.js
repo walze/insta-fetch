@@ -2,12 +2,10 @@
 const { default: axios } = require('axios')
 const fs = require('fs')
 const { promisify } = require('util')
-const path = require('path')
 const sizeOf = require('image-size')
 const Queue = require('promise-queue')
 
 
-const readdir = promisify(fs.readdir)
 const writeFile = promisify(fs.writeFile)
 // const rename = promisify(fs.rename)
 
@@ -21,14 +19,6 @@ const dir = `${__dirname}/photos/`
 
 if (!fs.existsSync(dir))
     fs.mkdirSync(dir)
-
-readdir(dir).then(files => {
-    for (const file of files) {
-        fs.unlink(path.join(dir, file), err => {
-            if (err) throw err
-        })
-    }
-})
 
 
 const getSize = path => sizeOf(path)

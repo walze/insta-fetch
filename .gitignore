@@ -1,6 +1,7 @@
 src/**/data/*
 
 src/**/photos/*.png
+src/**/photos_filter/*.png
 
 dist/
 
