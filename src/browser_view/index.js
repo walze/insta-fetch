@@ -20,6 +20,7 @@ shuffle(Object.entries(_ps))
 
         const [rx, ry] = resolution2Ratio(width, height)
 
+        img.classList.add('lazy')
         img.dataset.src = path
         img.dataset.width = 320
         img.dataset.height = (ry * 320) / rx
