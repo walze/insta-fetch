@@ -12,8 +12,7 @@ const psJ = _psJ
 
 console.log(psJ)
 
-Object
-    .entries(_ps)
+shuffle(Object.entries(_ps))
     .map(([file, path]) => {
         const keyPhoto = file.split('.')[0]
         const img = new Image()
