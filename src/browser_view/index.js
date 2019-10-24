@@ -1,45 +1,31 @@
-import '@babel/polyfill'
-import LazyLoad from 'vanilla-lazyload'
+import { shuffle } from './../helpers'
 
-import { shuffle, resolution2Ratio } from './../helpers'
+import _ps from '../node/filtered_photos/**.png'
 
+import { runLazyloader } from './lazyload'
 
-import _ps from '../node/photos_filter/**.png'
-import _psJ from '../sizes.json'
+const $imgs = document.querySelector('.imgs')
 
-/** @type { Ips[] } */
-const psJ = _psJ
+const getPaths = obj => Object.entries(obj).map(([, path]) => path)
 
-console.log(psJ, _ps)
+const photos = new Map
+const _photos = getPaths(_ps)
+
+_photos.map(path => photos.set(path.split('.')[0], path))
+
+console.log(photos, _photos.length)
 
 shuffle(Object.entries(_ps))
-    .map(([file, path]) => {
-        const keyPhoto = file.split('.')[0]
+    .map(([, path]) => {
         const img = new Image()
-        const { width, height } = psJ.find(({ key }) => key === keyPhoto)
 
-        const [rx, ry] = resolution2Ratio(width, height)
-
-        img.classList.add('lazy')
         img.dataset.src = path
-        img.dataset.width = 320
-        img.dataset.height = (ry * 320) / rx
-        img.width = 320
-        img.height = (ry * 320) / rx
+        img.width = 160
 
-        document.querySelector('.imgs').appendChild(img)
+        $imgs.appendChild(img)
     })
 
 
 
-new LazyLoad()
 
-/**
- * @typedef {{
- *    "height": number,
- *    "width": number,
- *    "dir": string,
- *    "name": string,
- *    "key": string
- *  }} Ips
- */
+runLazyloader()

@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "merge": "node src/node/merge",
     "write": "node src/node/write_photos",
     "build": "parcel build src/browser_view/index.html -d ./docs --no-cache --public-url . --log-level 4",
     "build:test": "parcel build src/browser_view/index.html -d ./dist --no-cache --public-url . --log-level 4",
@@ -18,7 +19,7 @@
     "@babel/plugin-transform-runtime": "^7.6.2",
     "@babel/preset-env": "^7.6.3",
     "parcel-bundler": "^1.12.4",
-    "sass": "^1.23.0",
+    "sass": "^1.23.1",
     "webpack": "^4.41.2"
   },
   "dependencies": {
@@ -27,8 +28,9 @@
     "eslint": "^6.5.1",
     "image-size": "^0.8.3",
     "promise-queue": "^2.2.5",
-    "terser-webpack-plugin": "^2.1.3",
-    "vanilla-lazyload": "^12.1.0",
+    "ramda": "^0.26.1",
+    "terser-webpack-plugin": "^2.2.1",
+    "vanilla-lazyload": "^12.2.0",
     "webpack-cli": "^3.3.9"
   }
 }
