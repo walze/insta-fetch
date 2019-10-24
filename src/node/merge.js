@@ -14,15 +14,13 @@ if (!fs.existsSync(out))
     fs.mkdirSync(out)
 
 const filterPhotoExtension = filter(photo => photo.match(/\.(png|jpg|jpeg)$/g))
+const readPhotos = path => readdir(path)
+    .then(filterPhotoExtension)
+    .then(map(s => [path + s, s]))
 
 const get = async () => {
-    const docs = await readdir(dir_docs)
-        .then(filterPhotoExtension)
-        .then(map(s => [dir_docs + s, s]))
-
-    const photos = await readdir(dir)
-        .then(filterPhotoExtension)
-        .then(map(s => [dir + s, s]))
+    const docs = await readPhotos(dir_docs)
+    const photos = await readPhotos(dir)
 
     const merged = [...docs, ...photos]
     const filtered = new Map
