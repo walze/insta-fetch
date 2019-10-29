@@ -1,5 +1,3 @@
-import { shuffle } from './../helpers'
-
 import _ps from '../node/filtered_photos/**.png'
 
 import { runLazyloader } from './lazyload'
@@ -15,7 +13,7 @@ _photos.map(path => photos.set(path.split('.')[0], path))
 
 console.log(photos, _photos.length)
 
-shuffle(Object.entries(_ps))
+Object.entries(_ps)
     .map(([, path]) => {
         const img = new Image()
 

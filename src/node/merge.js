@@ -3,7 +3,6 @@ const { filter, map } = require('ramda')
 const { promisify } = require('util')
 const fs = require('fs')
 
-const writeFile = promisify(fs.writeFile)
 const readdir = promisify(fs.readdir)
 
 const dir = `${__dirname}/photos/`
