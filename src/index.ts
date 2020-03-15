@@ -30,7 +30,12 @@ const API = pipe(
 of(API(first))
   .pipe(
     tap(console.warn),
-    flatMap((x: string) => axios.get<InstagramRequest>(x)),
+    flatMap((x: string) => axios
+      .get<InstagramRequest>(x, {
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })),
     map(x => x.data.data.user.edge_saved_media)
   )
   .subscribe(console.log)
