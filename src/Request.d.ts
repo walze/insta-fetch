@@ -1,42 +1,43 @@
-  export interface PageInfo {
+/* eslint-disable camelcase */
+export interface PageInfo {
       has_next_page: boolean;
       end_cursor: string;
   }
 
-  export interface Node2 {
+export interface Node2 {
       text: string;
   }
 
-  export interface Edge2 {
+export interface Edge2 {
       node: Node2;
   }
 
-  export interface EdgeMediaToCaption {
+export interface EdgeMediaToCaption {
       edges: Edge2[];
   }
 
-  export interface EdgeMediaToComment {
+export interface EdgeMediaToComment {
       count: number;
   }
 
-  export interface Dimensions {
+export interface Dimensions {
       height: number;
       width: number;
   }
 
-  export interface EdgeLikedBy {
+export interface EdgeLikedBy {
       count: number;
   }
 
-  export interface EdgeMediaPreviewLike {
+export interface EdgeMediaPreviewLike {
       count: number;
   }
 
-  export interface Owner {
+export interface Owner {
       id: string;
   }
 
-  export interface Node {
+export interface Node {
       id: string;
       __typename: string;
       edge_media_to_caption: EdgeMediaToCaption;
@@ -54,25 +55,25 @@
       accessibility_caption: string;
   }
 
-  export interface Edge {
+export interface Edge {
       node: Node;
   }
 
-  export interface EdgeSavedMedia {
+export interface EdgeSavedMedia {
       count: number;
       page_info: PageInfo;
       edges: Edge[];
   }
 
-  export interface User {
+export interface User {
       edge_saved_media: EdgeSavedMedia;
   }
 
-  export interface Data {
+export interface Data {
       user: User;
   }
 
-  export interface Request {
+export interface Request {
       data: Data;
       status: string;
   }
