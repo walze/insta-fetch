@@ -5,9 +5,9 @@ import { pipe } from 'ramda'
 import axios from 'axios'
 
 import { of, BehaviorSubject } from 'rxjs'
-import { flatMap, map, tap, toArray, scan, delay } from 'rxjs/operators'
+import { flatMap, map, tap, scan, delay } from 'rxjs/operators'
 
-import { Request as InstagramRequest, Edge, PageInfo } from './Request'
+import { Request as InstagramRequest, Edge } from './Request'
 
 export interface RequestVariables {
   id: string;
@@ -41,7 +41,7 @@ const API = pipe(
   u => of(u)
 )
 
-type Edge$ = ReturnType<typeof getEdgeData>
+export type Edge$ = ReturnType<typeof getEdgeData>
 const edges$ = new BehaviorSubject<Edge$[]>([] as unknown as Edge$[])
 
 edges$

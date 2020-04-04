@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "compile": "tsc --watch",
-    "nodemon": "nodemon ./dist/index.js",
+    "nodemon": "nodemon ./dist/src/download.js",
     "parcel": "parcel ./src/index.ts --no-cache --out-file=index --no-source-maps"
   },
   "repository": {
@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/walze/insta-fetch#readme",
   "devDependencies": {
+    "@types/node": "^13.11.0",
     "@types/ramda": "^0.27.3",
     "@typescript-eslint/eslint-plugin": "^2.26.0",
     "@typescript-eslint/parser": "^2.26.0",
