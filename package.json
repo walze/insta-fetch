@@ -1,36 +1,41 @@
 {
-  "name": "tests",
+  "name": "insta-fetch",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Instagram Saved Downloader",
+  "main": "dist/index.js",
   "scripts": {
-    "merge": "node src/node/merge",
-    "write": "node src/node/write_photos",
-    "build": "parcel build src/browser_view/index.html -d ./docs --no-cache --public-url . --log-level 4",
-    "build:test": "parcel build src/browser_view/index.html -d ./dist --no-cache --public-url . --log-level 4",
-    "start": "parcel src/browser_view/index.html --no-cache --log-level 4",
-    "dom": "webpack --mode development --watch",
-    "dom:prod": "webpack --mode production --devtool none"
+    "compile": "tsc --watch",
+    "nodemon": "nodemon ./dist/src/download.js",
+    "parcel": "parcel ./src/index.ts --no-cache --out-file=index --no-source-maps"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/walze/insta-fetch.git"
+  },
+  "author": "Wallace Fares",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/walze/insta-fetch/issues"
+  },
+  "homepage": "https://github.com/walze/insta-fetch#readme",
   "devDependencies": {
-    "@babel/core": "^7.6.4",
-    "@babel/plugin-transform-runtime": "^7.6.2",
-    "@babel/preset-env": "^7.6.3",
+    "@types/node": "^13.11.0",
+    "@types/ramda": "^0.27.3",
+    "@typescript-eslint/eslint-plugin": "^2.26.0",
+    "@typescript-eslint/parser": "^2.26.0",
+    "eslint": "^6.8.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "npm-run-all": "^4.1.5",
     "parcel-bundler": "^1.12.4",
-    "sass": "^1.23.1",
-    "webpack": "^4.41.2"
+    "typescript": "^3.8.3"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.6.0",
-    "axios": "^0.19.0",
-    "eslint": "^6.6.0",
-    "image-size": "^0.8.3",
-    "promise-queue": "^2.2.5",
-    "ramda": "^0.26.1",
-    "terser-webpack-plugin": "^2.2.1",
-    "vanilla-lazyload": "^12.2.0",
-    "webpack-cli": "^3.3.9"
+    "axios": "^0.19.2",
+    "ramda": "^0.27.0",
+    "rxjs": "^6.5.5"
   }
 }
